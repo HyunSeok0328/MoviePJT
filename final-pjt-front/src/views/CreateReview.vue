@@ -1,0 +1,233 @@
+<template>
+  <div class="wrapper mt-5">
+    <form>
+      <div class="group">
+        <input 
+          type="text" 
+          v-model.trim="title"
+          id="title"
+          required="required"
+        />
+        <span class="highlight"></span><span class="bar"></span>
+        <label for="title">Title</label>
+      </div>
+      <div class="group">
+        <textarea 
+          v-model.trim="content"
+          id="content"
+          type="textarea" 
+          rows="3" 
+          required="required">
+          </textarea><span class="highlight"></span><span class="bar"></span>
+        <label for="content">Content</label>
+      </div>
+    </form>
+    <b-button variant="outline-secondary" class="btn btn-submit" @click="createReview">submit</b-button>
+  </div>
+</template>
+
+
+<script>
+import axios from'axios'
+
+export default {
+  name: 'CreateReview',
+  data: function () {
+    return {
+      title: null,
+      movieTitle: null,
+      content: null,
+    }
+  },
+  methods: {
+    setToken: function(){
+      const token = localStorage.getItem('jwt')
+      const config = {
+        Authorization: `JWT ${token}`
+      }
+      return config
+    },
+    
+    createReview: function () {
+      const reviewItem = {
+        title: this.title,
+        movie_title: this.movieTitle,
+        rank: this.rank,
+        content: this.content,
+      }
+
+      if (reviewItem.title) {
+        axios({
+          method: 'post',
+          url: 'http://127.0.0.1:8000/community/review/',
+          data: reviewItem,
+          headers: this.setToken()
+        })
+          .then(() => {
+            this.title = null,
+            this.movieTitle = null,
+            this.rank = null,
+            this.content = null,
+            this.$router.push({ name: 'Community' })
+          })
+          .catch(err => {
+            console.log(err)
+          })
+        }
+    },
+  },
+ 
+}
+</script>
+<style scoped>
+*,
+:before,
+:after {
+  box-sizing: border-box;
+}
+
+body {
+  background: #424242;
+}
+
+form {
+  width: 320px;
+  margin: 45px auto;
+}
+form h1 {
+  font-size: 3em;
+  font-weight: 300;
+  text-align: center;
+  color: #2196F3;
+}
+form h5 {
+  text-align: center;
+  text-transform: uppercase;
+  color: #c6c6c6;
+}
+form hr.sep {
+  background: #C0C0C0;
+  box-shadow: none;
+  border: none;
+  height: 2px;
+  width: 25%;
+  margin: 0px auto 45px auto;
+}
+form .emoji {
+  font-size: 1.2em;
+}
+
+.group {
+  position: relative;
+  margin: 45px 0;
+}
+
+textarea {
+  resize: none;
+}
+
+input,
+textarea {
+  background: none;
+  color: #c6c6c6;
+  font-size: 18px;
+  padding: 10px 10px 10px 5px;
+  display: block;
+  width: 320px;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid #c6c6c6;
+}
+input:focus,
+textarea:focus {
+  outline: none;
+}
+input:focus ~ label, input:valid ~ label,
+textarea:focus ~ label,
+textarea:valid ~ label {
+  top: -14px;
+  font-size: 12px;
+  color: #C0C0C0;
+}
+input:focus ~ .bar:before,
+textarea:focus ~ .bar:before {
+  width: 320px;
+}
+
+input[type=password] {
+  letter-spacing: 0.3em;
+}
+
+label {
+  color: #c6c6c6;
+  font-size: 16px;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 5px;
+  top: 10px;
+  transition: 300ms ease all;
+}
+
+.bar {
+  position: relative;
+  display: block;
+  width: 320px;
+}
+.bar:before {
+  content: "";
+  height: 2px;
+  width: 0;
+  bottom: 0px;
+  position: absolute;
+  background: #C0C0C0;
+  transition: 300ms ease all;
+  left: 0%;
+}
+
+/* .btn {
+  background: #fff;
+  color: #959595;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 3px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  outline: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.btn:hover {
+  color: #8b8b8b;
+  box-shadow: 0 7px 14px rgba(0, 0, 0, 0.18), 0 5px 5px rgba(0, 0, 0, 0.12);
+}
+.btn.btn-link {
+  background: #C0C0C0;
+  color: #d3eafd;
+}
+.btn.btn-link:hover {
+  background: #0d8aee;
+  color: #deeffd;
+}
+.btn.btn-submit {
+  background: #C0C0C0;
+  color: #bce0fb;
+}
+.btn.btn-submit:hover {
+  background: #0d8aee;
+  color: #deeffd;
+}
+.btn.btn-cancel {
+  background: #eee;
+}
+.btn.btn-cancel:hover {
+  background: #e1e1e1;
+  color: #8b8b8b;
+}
+
+.btn-box {
+  text-align: center;
+  margin: 50px 0;
+} */
+</style>
